@@ -144,6 +144,10 @@ Use the `Benchmark Version` dropdown in the filters panel to switch between publ
 - This README is intentionally audience-facing.
 - Technical and maintainer-oriented content lives in `docs/TECHNICAL.md`.
 
+## License
+
+MIT. See [LICENSE](LICENSE).
+
 ## Star History 
 
 <picture>
