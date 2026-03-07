@@ -38,7 +38,7 @@ rank,model,org,reasoning,avg_score,green_rate,red_rate,score_2,score_1,score_0,n
 37,google/gemini-3.1-pro-preview@reasoning=high,google,high,0.8667,0.31,0.46,31,23,46,100,0
 38,anthropic/claude-sonnet-4@reasoning=high,anthropic,high,0.8533,0.3,0.43,30,27,43,100,0
 39,openai/gpt-5.1-codex@reasoning=default,openai,default,0.8433,0.32,0.43,32,25,43,100,0
-40,meta-llama/llama-4-maverick@reasoning=default,meta-llama,default,0.8333,0.28,0.42,28,30,42,100,0
+40,meta-llama/llama-4-maverick@reasoning=default,meta,default,0.8333,0.28,0.42,28,30,42,100,0
 41,openai/gpt-5.2-chat@reasoning=default,openai,default,0.83,0.27,0.4,27,33,40,100,0
 42,openai/gpt-5.3-codex@reasoning=low,openai,low,0.83,0.24,0.37,24,39,37,100,0
 43,openai/gpt-5@reasoning=default,openai,default,0.82,0.21,0.37,21,42,37,100,0
@@ -50,8 +50,8 @@ rank,model,org,reasoning,avg_score,green_rate,red_rate,score_2,score_1,score_0,n
 49,google/gemini-2.5-pro@reasoning=default,google,default,0.5967,0.2,0.58,20,22,58,100,0
 50,z-ai/glm-5@reasoning=none,z-ai,none,0.5867,0.2,0.58,20,22,58,100,0
 51,x-ai/grok-4.1-fast@reasoning=high,x-ai,high,0.5767,0.19,0.59,19,22,59,100,0
-52,meta-llama/llama-4-scout@reasoning=default,meta-llama,default,0.5633,0.19,0.61,19,20,61,100,0
-53,meta-llama/llama-3.1-8b-instruct@reasoning=default,meta-llama,default,0.5633,0.14,0.61,14,25,61,100,0
+52,meta-llama/llama-4-scout@reasoning=default,meta,default,0.5633,0.19,0.61,19,20,61,100,0
+53,meta-llama/llama-3.1-8b-instruct@reasoning=default,meta,default,0.5633,0.14,0.61,14,25,61,100,0
 54,xiaomi/mimo-v2-flash@reasoning=none,xiaomi,none,0.55,0.16,0.56,16,28,56,100,0
 55,google/gemini-2.5-flash@reasoning=default,google,default,0.54,0.19,0.67,19,14,67,100,0
 56,openai/gpt-4o-2024-08-06@reasoning=default,openai,default,0.4933,0.12,0.61,12,27,61,100,0

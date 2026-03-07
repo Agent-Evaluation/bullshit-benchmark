@@ -1203,6 +1203,7 @@ const CATEGORY_ORDER = ["green", "amber", "red", "error"];
 
 const ORG_COLORS = {
   anthropic: "#f97316", openai: "#111827", google: "#1a73e8",
+  meta: "#0866ff",
   "x-ai": "#6d28d9", mistralai: "#ec4899", deepseek: "#06b6d4",
   "bytedance-seed": "#0ea5e9", xiaomi: "#ff6900", qwen: "#7c3aed",
   moonshotai: "#0284c7", minimax: "#14b8a6", baidu: "#1d4ed8",
@@ -1210,6 +1211,7 @@ const ORG_COLORS = {
 };
 const ORG_NAMES = {
   anthropic: "Anthropic", openai: "OpenAI", google: "Google",
+  meta: "Meta",
   "x-ai": "xAI", mistralai: "Mistral", deepseek: "DeepSeek",
   "bytedance-seed": "ByteDance", xiaomi: "Xiaomi", qwen: "Qwen",
   moonshotai: "Moonshot AI", minimax: "MiniMax", baidu: "Baidu",
@@ -1288,7 +1290,10 @@ function fmtAxisNumber(v) {
   return Number.isInteger(v) ? fmtNum(v) : Number(v).toFixed(1);
 }
 
-function normOrg(v) { return String(v||"unknown").trim().toLowerCase(); }
+function normOrg(v) {
+  const normalized = String(v || "unknown").trim().toLowerCase();
+  return normalized === "meta-llama" ? "meta" : normalized;
+}
 function orgColor(o) { const n=normOrg(o); return ORG_COLORS[n] || `hsl(${Math.abs(hashStr(n))%360} 60% 42%)`; }
 function orgName(o) { const n=normOrg(o); return ORG_NAMES[n] || n.charAt(0).toUpperCase()+n.slice(1); }
 function hashStr(s) { let h=0; for(let i=0;i<s.length;i++) h=((h<<5)-h+s.charCodeAt(i))|0; return h; }

@@ -556,6 +556,8 @@ fieldnames = [
 def parse_parts(model: str) -> tuple[str, str]:
     text = str(model or "")
     org = text.split("/", 1)[0] if "/" in text else "unknown"
+    if org == "meta-llama":
+        org = "meta"
     match = re.search(r"@reasoning=([^@]+)$", text)
     reasoning = match.group(1) if match else "default"
     return org, reasoning
