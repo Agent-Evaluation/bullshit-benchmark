@@ -120,13 +120,15 @@ Provider routing is configured per model via `collect.model_providers` and
 ```
 
 Then open `http://localhost:8877/viewer/index.v2.html`.
-Use the `Benchmark Version` dropdown in the filters panel to switch between published datasets (for example `v1` and `v2`).
+Use the `Benchmark Version` dropdown in the filters panel to switch between published datasets (for example `v1`, `v2`, and `full`).
 
-## v1 to v2
+## Published Datasets
 
 - v1 dataset remains in `data/latest`.
 - v2 dataset is published in `data/v2/latest`.
+- Full-suite 155-question dataset is published in `data/full/latest`.
 - v2 question set comes from `drafts/new-questions.md` via `scripts/build_questions_v2_from_draft.py`.
+- Full-suite question set is the published merge in `questions.full.155.json`.
 - Canonical judging is now fixed to exactly 3 judges on every row with mean aggregation (legacy disagreement-tiebreak mode is retired from the main pipeline).
 - Release notes and notable changes are tracked in `CHANGELOG.md`.
 

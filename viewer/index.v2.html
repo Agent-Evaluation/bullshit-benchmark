@@ -1100,6 +1100,7 @@
             <span>Version</span>
             <select id="benchmarkVersionSelect" aria-label="Benchmark version">
               <option value="v2">V2 (New)</option>
+              <option value="full">Full Suite (155)</option>
               <option value="v1">V1 (Original)</option>
             </select>
           </label>
@@ -1389,6 +1390,33 @@ const BENCHMARK_CONFIGS = {
       },
     ],
   },
+  full: {
+    key: "full",
+    displayLabel: "Full Suite (155)",
+    heroTitle: "BullshitBench",
+    heroSubtitle:
+      "Compare Grok 4.20 results across the combined 155-question full suite without mixing them into the standalone v1 or v2 leaderboards.",
+    loadingLabel: "full suite",
+    headingPrefix: "BullshitBench full suite",
+    titlePrefix: "BullshitBench",
+    questionsPaths: ["../questions.full.155.json"],
+    launchFallbackPath: "../data/full/latest/model_launch_dates.csv",
+    paramsFallbackPath: "../data/full/latest/model_params.csv",
+    embeddedDatasetKey: "",
+    embeddedLaunchKey: "",
+    showDomainGroup: false,
+    showDomainHeatmap: false,
+    showDomainInsights: false,
+    dataSources: [
+      {
+        name: "Published full-suite dataset",
+        basePath: "../data/full/latest",
+        supportsAggregate: true,
+        supportsPanelSummary: true,
+        supportsLaunchMetadata: true,
+      },
+    ],
+  },
   v1: {
     key: "v1",
     displayLabel: "V1 (Original)",
@@ -1436,7 +1464,7 @@ const LOCAL_LAUNCH_OVERRIDES = [
 function benchmarkVersionFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const raw = String(params.get("benchmark") || params.get("version") || "").trim().toLowerCase();
-  return raw === "v1" ? "v1" : "v2";
+  return BENCHMARK_CONFIGS[raw] ? raw : "v2";
 }
 function applyCompareStateToUrl(url) {
   if (!(url instanceof URL)) return url;
@@ -1522,7 +1550,7 @@ function inferLaunchRowsFromResponses(responses, launchMap) {
   return [...inferred.values()].map(({ _startedAt, ...row }) => row);
 }
 function setBenchmarkInUrl(nextVersion) {
-  const next = nextVersion === "v1" ? "v1" : "v2";
+  const next = BENCHMARK_CONFIGS[nextVersion] ? nextVersion : "v2";
   const url = new URL(window.location.href);
   if (next === "v2") url.searchParams.delete("benchmark");
   else url.searchParams.set("benchmark", next);
@@ -3922,7 +3950,7 @@ function bindEvents() {
   const versionSel = document.getElementById("benchmarkVersionSelect");
   if (versionSel) {
     versionSel.addEventListener("change", () => {
-      const next = versionSel.value === "v1" ? "v1" : "v2";
+      const next = BENCHMARK_CONFIGS[versionSel.value] ? versionSel.value : "v2";
       if (next !== S.benchmarkVersion) setBenchmarkInUrl(next);
     });
   }

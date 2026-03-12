@@ -56,6 +56,14 @@ Use the v2 config and publish to `data/v2/latest`:
 
 The viewer can switch between versions using the `Benchmark Version` dropdown.
 
+### Publish a Full-Suite 155-Question Run
+
+Publish combined v1+v2 runs to the dedicated full-suite track:
+
+```bash
+./scripts/publish_latest_to_viewer.sh --output-dir data/full/latest ...
+```
+
 ### v1 to v2 Release Best Practices
 
 Use this checklist before pushing to GitHub/GitHub Pages:
@@ -63,6 +71,7 @@ Use this checklist before pushing to GitHub/GitHub Pages:
 1. Keep versioned published datasets side-by-side:
    - v1: `data/latest/*`
    - v2: `data/v2/latest/*`
+   - full suite: `data/full/latest/*`
 2. Do not commit local run history (`runs/*`) or ad hoc temp artifacts.
 3. Rebuild v2 question JSON from draft source when question content changes:
    - source: `drafts/new-questions.md`
@@ -100,7 +109,7 @@ Use this when you already have run outputs and only want to refresh a viewer dat
   --panel-summary <path/to/panel_summary.json> \
   --aggregate-summary <path/to/aggregate_summary.json> \
   --aggregate-rows <path/to/aggregate.jsonl> \
-  --output-dir <data/latest-or-data/v2/latest>
+  --output-dir <data/latest-or-data/v2/latest-or-data/full/latest>
 ```
 
 Publish behavior:
@@ -153,7 +162,7 @@ Publishing also exports:
 
 - `scripts/openrouter_benchmark.py`: core CLI (`collect`, `grade`, `grade-panel`, `aggregate`, `report`)
 - `scripts/run_end_to_end.sh`: one-command pipeline runner
-- `scripts/publish_latest_to_viewer.sh`: publish run outputs into a selected viewer dataset dir (`data/latest` or `data/v2/latest`)
+- `scripts/publish_latest_to_viewer.sh`: publish run outputs into a selected viewer dataset dir (`data/latest`, `data/v2/latest`, or `data/full/latest`)
 - `scripts/build_questions_v2_from_draft.py`: build `questions.v2.json` from markdown draft
 - `scripts/cleanup_generated_outputs.sh`: remove generated local artifacts
 - `scripts/model_launch_pipeline.py`: launch-date collection/judging pipeline
@@ -161,11 +170,12 @@ Publishing also exports:
 - `viewer/index.v2.html`: v2-focused interactive viewer
 - `data/latest/*`: benchmark v1 published dataset
 - `data/v2/latest/*`: benchmark v2 published dataset
+- `data/full/latest/*`: benchmark full-suite published dataset
 - `runs/*`: local run history
 
 ## Published Dataset Files
 
-`data/latest` contains:
+Each published dataset directory (`data/latest`, `data/v2/latest`, or `data/full/latest`) contains:
 
 - `responses.jsonl`
 - `collection_stats.json`

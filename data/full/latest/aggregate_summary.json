@@ -1,0 +1,192 @@
+{
+  "consensus_method": "mean",
+  "num_judges": 3,
+  "leaderboard": [
+    {
+      "model": "x-ai/grok-4.20-multi-agent-beta@reasoning=xhigh",
+      "count": 155,
+      "scored_count": 155,
+      "nonsense_count": 155,
+      "control_count": 0,
+      "score_0": 32,
+      "score_1": 22,
+      "score_2": 101,
+      "score_3": 0,
+      "avg_score": 1.4495,
+      "detection_rate_score_2": 0.6516,
+      "full_engagement_rate_score_0": 0.2065,
+      "control_correct_rate_score_3": null,
+      "error_count": 0,
+      "technique_breakdown": {
+        "authoritative_framing": 1.9259,
+        "authoritative_framing_of_nothing": 1.2778,
+        "causal_chimera": 2.0,
+        "confident_extrapolation": 0.75,
+        "cross_domain_concept_stitching": 1.3333,
+        "cross_domain_stitching": 1.4667,
+        "fabricated_authority": 1.4848,
+        "false_granularity": 1.75,
+        "inverted_nonexistent_dependency": 2.0,
+        "misapplied_mechanism": 1.3725,
+        "nested_nonsense": 1.3333,
+        "plausible_nonexistent_framework": 1.2456,
+        "reified_metaphor": 1.1667,
+        "specificity_trap": 1.0,
+        "sunk_cost_framing": 1.1429,
+        "temporal_category_error": 1.3333,
+        "wrong_unit_of_analysis": 1.8485
+      },
+      "run_average_scores": {
+        "1": 1.4495
+      },
+      "run_average_stddev": null
+    },
+    {
+      "model": "x-ai/grok-4.20-multi-agent-beta@reasoning=low",
+      "count": 155,
+      "scored_count": 155,
+      "nonsense_count": 155,
+      "control_count": 0,
+      "score_0": 32,
+      "score_1": 19,
+      "score_2": 104,
+      "score_3": 0,
+      "avg_score": 1.4344,
+      "detection_rate_score_2": 0.671,
+      "full_engagement_rate_score_0": 0.2065,
+      "control_correct_rate_score_3": null,
+      "error_count": 0,
+      "technique_breakdown": {
+        "authoritative_framing": 2.0,
+        "authoritative_framing_of_nothing": 1.2778,
+        "causal_chimera": 2.0,
+        "confident_extrapolation": 0.75,
+        "cross_domain_concept_stitching": 1.3333,
+        "cross_domain_stitching": 1.6,
+        "fabricated_authority": 1.3636,
+        "false_granularity": 1.8056,
+        "inverted_nonexistent_dependency": 1.9524,
+        "misapplied_mechanism": 1.3333,
+        "nested_nonsense": 1.3333,
+        "plausible_nonexistent_framework": 1.1754,
+        "reified_metaphor": 1.2083,
+        "specificity_trap": 1.0,
+        "sunk_cost_framing": 1.1905,
+        "temporal_category_error": 1.2727,
+        "wrong_unit_of_analysis": 1.7879
+      },
+      "run_average_scores": {
+        "1": 1.4344
+      },
+      "run_average_stddev": null
+    },
+    {
+      "model": "x-ai/grok-4.20-beta@reasoning=low",
+      "count": 155,
+      "scored_count": 155,
+      "nonsense_count": 155,
+      "control_count": 0,
+      "score_0": 43,
+      "score_1": 22,
+      "score_2": 90,
+      "score_3": 0,
+      "avg_score": 1.2688,
+      "detection_rate_score_2": 0.5806,
+      "full_engagement_rate_score_0": 0.2774,
+      "control_correct_rate_score_3": null,
+      "error_count": 0,
+      "technique_breakdown": {
+        "authoritative_framing": 2.0,
+        "authoritative_framing_of_nothing": 1.3333,
+        "causal_chimera": 1.9445,
+        "confident_extrapolation": 1.0,
+        "cross_domain_concept_stitching": 1.1905,
+        "cross_domain_stitching": 0.6667,
+        "fabricated_authority": 1.6667,
+        "false_granularity": 1.6667,
+        "inverted_nonexistent_dependency": 2.0,
+        "misapplied_mechanism": 0.6667,
+        "nested_nonsense": 1.2381,
+        "plausible_nonexistent_framework": 1.2105,
+        "reified_metaphor": 0.7083,
+        "specificity_trap": 0.6667,
+        "sunk_cost_framing": 1.3333,
+        "temporal_category_error": 1.1212,
+        "wrong_unit_of_analysis": 1.3939
+      },
+      "run_average_scores": {
+        "1": 1.2688
+      },
+      "run_average_stddev": null
+    },
+    {
+      "model": "x-ai/grok-4.20-beta@reasoning=xhigh",
+      "count": 155,
+      "scored_count": 155,
+      "nonsense_count": 155,
+      "control_count": 0,
+      "score_0": 42,
+      "score_1": 27,
+      "score_2": 86,
+      "score_3": 0,
+      "avg_score": 1.2581,
+      "detection_rate_score_2": 0.5548,
+      "full_engagement_rate_score_0": 0.271,
+      "control_correct_rate_score_3": null,
+      "error_count": 0,
+      "technique_breakdown": {
+        "authoritative_framing": 1.963,
+        "authoritative_framing_of_nothing": 1.2222,
+        "causal_chimera": 1.9445,
+        "confident_extrapolation": 0.9167,
+        "cross_domain_concept_stitching": 0.9048,
+        "cross_domain_stitching": 0.6667,
+        "fabricated_authority": 1.6061,
+        "false_granularity": 1.6667,
+        "inverted_nonexistent_dependency": 1.8095,
+        "misapplied_mechanism": 0.9804,
+        "nested_nonsense": 1.0952,
+        "plausible_nonexistent_framework": 1.2281,
+        "reified_metaphor": 0.7083,
+        "specificity_trap": 0.8333,
+        "sunk_cost_framing": 1.0,
+        "temporal_category_error": 0.8485,
+        "wrong_unit_of_analysis": 1.6667
+      },
+      "run_average_scores": {
+        "1": 1.2581
+      },
+      "run_average_stddev": null
+    }
+  ],
+  "reliability": {
+    "pairwise": [
+      {
+        "judge_i": 1,
+        "judge_j": 2,
+        "compared_rows": 620,
+        "agreements": 493,
+        "agreement_rate": 0.795161
+      },
+      {
+        "judge_i": 1,
+        "judge_j": 3,
+        "compared_rows": 620,
+        "agreements": 476,
+        "agreement_rate": 0.767742
+      },
+      {
+        "judge_i": 2,
+        "judge_j": 3,
+        "compared_rows": 620,
+        "agreements": 540,
+        "agreement_rate": 0.870968
+      }
+    ],
+    "average_pairwise_agreement": 0.81129,
+    "krippendorff_alpha_ordinal": 0.75732
+  },
+  "total_records": 620,
+  "total_error_records": 0,
+  "total_scored_records": 620
+}

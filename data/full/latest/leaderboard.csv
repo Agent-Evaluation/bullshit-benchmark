@@ -1,0 +1,5 @@
+rank,model,org,reasoning,avg_score,green_rate,red_rate,score_2,score_1,score_0,nonsense_count,error_count
+1,x-ai/grok-4.20-multi-agent-beta@reasoning=xhigh,x-ai,xhigh,1.4495,0.6516,0.2065,101,22,32,155,0
+2,x-ai/grok-4.20-multi-agent-beta@reasoning=low,x-ai,low,1.4344,0.671,0.2065,104,19,32,155,0
+3,x-ai/grok-4.20-beta@reasoning=low,x-ai,low,1.2688,0.5806,0.2774,90,22,43,155,0
+4,x-ai/grok-4.20-beta@reasoning=xhigh,x-ai,xhigh,1.2581,0.5548,0.271,86,27,42,155,0

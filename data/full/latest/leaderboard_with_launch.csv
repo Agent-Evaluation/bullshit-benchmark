@@ -1,0 +1,5 @@
+rank,model,org,reasoning,avg_score,green_rate,red_rate,score_2,score_1,score_0,nonsense_count,error_count,model_base,launch_date,model_age_days,launch_evidence_url,open_model_status,total_params_b,active_params_b,active_params_status,model_license
+1,x-ai/grok-4.20-multi-agent-beta@reasoning=xhigh,x-ai,xhigh,1.4495,0.6516,0.2065,101,22,32,155,0,x-ai/grok-4.20-multi-agent-beta,2026-03-10,2,https://docs.x.ai/docs/changelog,closed,,,not_disclosed,proprietary
+2,x-ai/grok-4.20-multi-agent-beta@reasoning=low,x-ai,low,1.4344,0.671,0.2065,104,19,32,155,0,x-ai/grok-4.20-multi-agent-beta,2026-03-10,2,https://docs.x.ai/docs/changelog,closed,,,not_disclosed,proprietary
+3,x-ai/grok-4.20-beta@reasoning=low,x-ai,low,1.2688,0.5806,0.2774,90,22,43,155,0,x-ai/grok-4.20-beta,2026-03-10,2,https://docs.x.ai/docs/changelog,closed,,,not_disclosed,proprietary
+4,x-ai/grok-4.20-beta@reasoning=xhigh,x-ai,xhigh,1.2581,0.5548,0.271,86,27,42,155,0,x-ai/grok-4.20-beta,2026-03-10,2,https://docs.x.ai/docs/changelog,closed,,,not_disclosed,proprietary

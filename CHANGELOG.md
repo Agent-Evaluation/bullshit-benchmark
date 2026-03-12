@@ -2,6 +2,21 @@
 
 All notable benchmark, data, and viewer changes are tracked in this file.
 
+## [2.0.4] - 2026-03-12
+
+### Added
+- Added a published full-suite dataset in `data/full/latest/*` for the combined 155-question benchmark.
+- Added published full-suite Grok 4.20 results for:
+  - `x-ai/grok-4.20-beta@reasoning=low`
+  - `x-ai/grok-4.20-beta@reasoning=xhigh`
+  - `x-ai/grok-4.20-multi-agent-beta@reasoning=low`
+  - `x-ai/grok-4.20-multi-agent-beta@reasoning=xhigh`
+- Added `questions.full.155.json` as the published merged question set for the full-suite viewer track.
+
+### Changed
+- Extended the viewer version switchers so the published site can load `full` alongside the existing `v1` and `v2` datasets.
+- Refreshed published full-suite viewer artifacts and metadata so the new Grok 4.20 run is available on GitHub Pages without altering the standalone v1 or v2 leaderboards.
+
 ## [2.0.3] - 2026-03-07
 
 ### Added

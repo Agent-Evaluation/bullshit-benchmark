@@ -1,0 +1,25 @@
+{
+  "panel_id": "run_grok420_full155_20260312_144856b_panel_openai3",
+  "timestamp_utc": "2026-03-12T15:13:37.453824+00:00",
+  "panel_mode": "full",
+  "judge_models": [
+    "openai/gpt-5.2",
+    "openai/gpt-4.1",
+    "openai/gpt-4o-2024-08-06"
+  ],
+  "judge_count": 3,
+  "primary_judges": [
+    "openai/gpt-5.2",
+    "openai/gpt-4.1"
+  ],
+  "parallel_primary_judges": true,
+  "resumed": false,
+  "parallelism": 24,
+  "primary_judges_max_inflight": 72,
+  "grade_dirs_for_aggregate": [],
+  "disagreement_count": 127,
+  "disagreement_rate": 0.2048,
+  "consensus_method": "mean",
+  "fail_on_error": false,
+  "publish_mode": "replace"
+}
