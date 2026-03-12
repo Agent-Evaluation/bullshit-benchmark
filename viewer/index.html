@@ -607,11 +607,30 @@
       align-items: center;
       border-radius: 10px;
       padding: 3px 6px;
+      position: relative;
+      border: 1px solid transparent;
+      transition: background 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
     }
 
     .stack-row.row-selected {
-      background: #eaf5f1;
-      box-shadow: inset 0 0 0 1px #9dcabf;
+      background: linear-gradient(90deg, #dcebe5 0%, #edf7f3 52%, #f8fbfa 100%);
+      border-color: #7f9f95;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+        0 0 0 2px rgba(44, 78, 69, 0.18),
+        0 14px 26px rgba(18, 31, 27, 0.08);
+    }
+
+    .stack-row.row-selected::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      bottom: 6px;
+      width: 5px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #10211c 0%, #1e7e6c 100%);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.45);
     }
 
     .stack-rank {
@@ -641,6 +660,12 @@
       padding: 1px 2px;
     }
 
+    .stack-row.row-selected .name.main-chart-name.main-chart-name-toggle {
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: 0 0 0 1px rgba(40, 73, 64, 0.16);
+      padding: 3px 8px;
+    }
+
     .stack-row .name.main-chart-name.main-chart-name-toggle:focus-visible {
       outline: 2px solid #1e7e6c;
       outline-offset: 2px;
@@ -658,6 +683,13 @@
       display: flex;
       border: 1px solid #d1dad5;
       background: #edf3f0;
+    }
+
+    .stack-row.row-selected .stack-track {
+      border-color: #839f95;
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+        0 0 0 2px rgba(44, 78, 69, 0.12);
     }
 
     .stack-seg {
@@ -1654,10 +1686,10 @@
     const CATEGORY_ORDER = ["green", "amber", "red", "error"];
     const ORG_COLOR_OVERRIDES = {
       anthropic: "#f97316",
-      openai: "#111827",
+      openai: "#1f9d55",
       google: "#1a73e8",
       meta: "#0866ff",
-      "x-ai": "#6d28d9",
+      "x-ai": "#111111",
       mistralai: "#ec4899",
       deepseek: "#06b6d4",
       bytedance: "#0ea5e9",
