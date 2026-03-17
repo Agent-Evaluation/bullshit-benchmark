@@ -743,13 +743,19 @@
       cursor: pointer;
       transition: r 120ms ease, stroke-width 120ms ease, fill-opacity 120ms ease, filter 120ms ease;
     }
+    .scatter-label,
+    .scatter-label-halo {
+      cursor: pointer;
+    }
     .scatter-point:hover {
       filter: drop-shadow(0 2px 6px rgba(24, 37, 49, 0.18));
     }
     .scatter-point.is-selected {
       filter: drop-shadow(0 3px 8px rgba(24, 37, 49, 0.22));
     }
-    .scatter-point:focus-visible {
+    .scatter-point:focus-visible,
+    .scatter-label:focus-visible,
+    .scatter-label-halo:focus-visible {
       outline: none;
     }
     .chart-legend {
@@ -3046,6 +3052,23 @@ function placeLabelsGreedy(points, opts = {}) {
   const placed = []; // { x, y, w, h }
   const result = []; // { point, x, y, anchor } for labels to render
 
+  function boxWithinPlot(box) {
+    return !(box.x < ml - 2 || box.x + box.w > svgW - mr + 2 || box.y < mt - 2 || box.y + box.h > svgH - mb + 2);
+  }
+
+  function clampBoxToPlot(box) {
+    const minX = ml - 2;
+    const maxX = svgW - mr + 2 - box.w;
+    const minY = mt - 2;
+    const maxY = svgH - mb + 2 - box.h;
+    return {
+      x: Math.min(Math.max(box.x, minX), Math.max(minX, maxX)),
+      y: Math.min(Math.max(box.y, minY), Math.max(minY, maxY)),
+      w: box.w,
+      h: box.h,
+    };
+  }
+
   // Check if a box intersects a line segment (with clearance)
   function boxIntersectsLine(box, seg, clearance) {
     const cl = clearance || 3;
@@ -3085,8 +3108,7 @@ function placeLabelsGreedy(points, opts = {}) {
 
   function overlaps(box, skipDotIdx) {
     // Check bounds (keep labels inside plot area)
-    if (box.x < ml - 2 || box.x + box.w > svgW - mr + 2) return true;
-    if (box.y < mt - 2 || box.y + box.h > svgH - mb + 2) return true;
+    if (!boxWithinPlot(box)) return true;
     // Check collision with already-placed labels
     for (const p of placed) {
       if (boxOverlapsRect(box, p, pad)) return true;
@@ -3106,9 +3128,9 @@ function placeLabelsGreedy(points, opts = {}) {
   const dotIdx = new Map();
   obstaclePoints.forEach((p,i) => dotIdx.set(p, i));
 
-  let labelsPlaced = 0;
+  let autoLabelsPlaced = 0;
   sorted.forEach(pt => {
-    if (labelsPlaced >= maxLabels) return;
+    if (!pt?._pinnedLabel && autoLabelsPlaced >= maxLabels) return;
     const labelW = pt.label.length * charW + 2;
     const labelH = lineH;
     const cx = pt._cx, cy = pt._cy;
@@ -3138,6 +3160,22 @@ function placeLabelsGreedy(points, opts = {}) {
       { dx: -labelW/2,   dy: 14 },                // extra below-center
     ];
 
+    if (pt._pinnedLabel) {
+      for (const o of offsets) {
+        const box = { x: cx + o.dx, y: cy + o.dy, w: labelW, h: labelH };
+        if (!boxWithinPlot(box)) continue;
+        placed.push(box);
+        const anchor = o.dx < -labelW/2 ? "end" : o.dx > 0 ? "start" : "middle";
+        const textX = anchor === "end" ? box.x + box.w : anchor === "middle" ? box.x + box.w/2 : box.x;
+        result.push({ point: pt, x: textX, y: box.y + labelH - 2, anchor });
+        return;
+      }
+      const fallbackBox = clampBoxToPlot({ x: cx + 8, y: cy - labelH/2, w: labelW, h: labelH });
+      placed.push(fallbackBox);
+      result.push({ point: pt, x: fallbackBox.x, y: fallbackBox.y + labelH - 2, anchor: "start" });
+      return;
+    }
+
     for (const o of offsets) {
       const box = { x: cx + o.dx, y: cy + o.dy, w: labelW, h: labelH };
       if (!overlaps(box, di)) {
@@ -3145,7 +3183,7 @@ function placeLabelsGreedy(points, opts = {}) {
         const anchor = o.dx < -labelW/2 ? "end" : o.dx > 0 ? "start" : "middle";
         const textX = anchor === "end" ? box.x + box.w : anchor === "middle" ? box.x + box.w/2 : box.x;
         result.push({ point: pt, x: textX, y: box.y + labelH - 2, anchor });
-        labelsPlaced++;
+        autoLabelsPlaced++;
         return;
       }
     }
@@ -3236,14 +3274,40 @@ function scatterLabelPriority(point) {
   return (point?._pinnedLabel ? 100000 : 0) + (Number(point?.greenRate) || 0);
 }
 
+function scatterToggleAriaLabel(point) {
+  return `${point?._pinnedLabel ? "Hide" : "Show"} label for ${point?.label || "model"}`;
+}
+
 function renderScatterCircle(point, chartId, opts = {}) {
   const radius = point._pinnedLabel ? (opts.selectedRadius || 5.4) : (opts.radius || 4.5);
   const fillOpacity = point._pinnedLabel ? (opts.selectedFillOpacity || 0.96) : (opts.fillOpacity || 0.85);
   const stroke = point._pinnedLabel ? (opts.selectedStroke || "#fffefb") : (opts.stroke || "#17211e");
   const strokeOpacity = point._pinnedLabel ? (opts.selectedStrokeOpacity || 0.95) : (opts.strokeOpacity || 0.3);
   const strokeWidth = point._pinnedLabel ? (opts.selectedStrokeWidth || 1.8) : (opts.strokeWidth || 0.8);
-  const ariaLabel = `${point._pinnedLabel ? "Hide" : "Show"} label for ${point.label}`;
+  const ariaLabel = scatterToggleAriaLabel(point);
   return `<circle class="scatter-point${point._pinnedLabel ? " is-selected" : ""}" data-scatter-chart="${esc(chartId)}" data-scatter-point-key="${esc(point._scatterKey)}" tabindex="0" role="button" aria-pressed="${point._pinnedLabel ? "true" : "false"}" aria-label="${esc(ariaLabel)}" cx="${point._cx.toFixed(1)}" cy="${point._cy.toFixed(1)}" r="${radius.toFixed(1)}" fill="${orgColor(point.org)}" fill-opacity="${fillOpacity}" stroke="${esc(stroke)}" stroke-opacity="${strokeOpacity}" stroke-width="${strokeWidth}"/>`;
+}
+
+function renderScatterLabelHalo(lp, chartId) {
+  const point = lp.point;
+  return `<circle class="scatter-label-halo${point._pinnedLabel ? " is-selected" : ""}" data-scatter-chart="${esc(chartId)}" data-scatter-point-key="${esc(point._scatterKey)}" tabindex="0" role="button" aria-pressed="${point._pinnedLabel ? "true" : "false"}" aria-label="${esc(scatterToggleAriaLabel(point))}" cx="${point._cx.toFixed(1)}" cy="${point._cy.toFixed(1)}" r="${point._pinnedLabel ? "6.4" : "5.6"}" fill="none" stroke="${orgColor(point.org)}" stroke-opacity="${point._pinnedLabel ? "0.7" : "0.45"}" stroke-width="${point._pinnedLabel ? "1.4" : "1"}"/>`;
+}
+
+function renderScatterTextLabel(lp, chartId, opts = {}) {
+  const point = lp.point;
+  const normalLabel = typeof opts.labelFormatter === "function" ? opts.labelFormatter(point) : launchChartModelLabel(point.label);
+  const pinnedLabel = typeof opts.pinnedLabelFormatter === "function" ? opts.pinnedLabelFormatter(point) : String(point.label || normalLabel);
+  const label = point._pinnedLabel ? pinnedLabel : normalLabel;
+  const normalFontSize = opts.fontSize || "8.6";
+  const pinnedFontSize = opts.pinnedFontSize || normalFontSize;
+  const normalFontWeight = opts.fontWeight || "620";
+  const pinnedFontWeight = opts.pinnedFontWeight || "700";
+  const normalFill = opts.fill || "#2b3b36";
+  const pinnedFill = opts.pinnedFill || "#1c2b3b";
+  const normalStrokeWidth = opts.strokeWidth || "2.1";
+  const pinnedStrokeWidth = opts.pinnedStrokeWidth || "2.4";
+  const opacity = opts.opacity || "0.97";
+  return `<text class="scatter-label${point._pinnedLabel ? " is-selected" : ""}" data-scatter-chart="${esc(chartId)}" data-scatter-point-key="${esc(point._scatterKey)}" tabindex="0" role="button" aria-pressed="${point._pinnedLabel ? "true" : "false"}" aria-label="${esc(scatterToggleAriaLabel(point))}" x="${lp.x.toFixed(1)}" y="${lp.y.toFixed(1)}" text-anchor="${lp.anchor||'start'}" fill="${point._pinnedLabel ? pinnedFill : normalFill}" font-size="${point._pinnedLabel ? pinnedFontSize : normalFontSize}" font-weight="${point._pinnedLabel ? pinnedFontWeight : normalFontWeight}" opacity="${opacity}" stroke="#fffefb" stroke-width="${point._pinnedLabel ? pinnedStrokeWidth : normalStrokeWidth}" paint-order="stroke">${esc(label)}</text>`;
 }
 
 function selectReleaseScatterLabelPoints(points, maxLabels = 10) {
@@ -3419,13 +3483,16 @@ function renderAllModelsScatter(filtered) {
     obstaclePoints: points, maxLabels: labelCandidates.length, dotRadius: 4, padding: 1.6,
     priorityFn: scatterLabelPriority,
   });
-  const labelHalo = labelPlacements.map(lp =>
-    `<circle cx="${lp.point._cx.toFixed(1)}" cy="${lp.point._cy.toFixed(1)}" r="${lp.point._pinnedLabel ? "6.4" : "5.6"}" fill="none" stroke="${orgColor(lp.point.org)}" stroke-opacity="${lp.point._pinnedLabel ? "0.7" : "0.45"}" stroke-width="${lp.point._pinnedLabel ? "1.4" : "1"}"/>`
-  ).join("");
-  const labelsHtml = labelPlacements.map(lp => {
-    const label = launchChartModelLabel(lp.point.label);
-    return `<text x="${lp.x.toFixed(1)}" y="${lp.y.toFixed(1)}" text-anchor="${lp.anchor||'start'}" fill="${lp.point._pinnedLabel ? "#1c2b3b" : "#2b3b36"}" font-size="${lp.point._pinnedLabel ? "9.2" : "8.6"}" font-weight="${lp.point._pinnedLabel ? "700" : "620"}" opacity="0.97" stroke="#fffefb" stroke-width="${lp.point._pinnedLabel ? "2.4" : "2.1"}" paint-order="stroke">${esc(label)}</text>`;
-  }).join("");
+  const labelHalo = labelPlacements.map(lp => renderScatterLabelHalo(lp, "allModelsScatter")).join("");
+  const labelsHtml = labelPlacements.map(lp => renderScatterTextLabel(lp, "allModelsScatter", {
+    fontSize: "8.6",
+    pinnedFontSize: "9.2",
+    fontWeight: "620",
+    pinnedFontWeight: "700",
+    strokeWidth: "2.1",
+    pinnedStrokeWidth: "2.4",
+    opacity: "0.97",
+  })).join("");
 
   svg.innerHTML = `${gridY}${gridX}${trendHtml}${dots}${labelHalo}${labelsHtml}
     <text x="${ml+pw/2}" y="${H-8}" text-anchor="middle" fill="#425851" font-size="12">Release Date</text>
@@ -3641,10 +3708,15 @@ function renderLaunchAllOrgs(filtered) {
     lineSegments: allLineSegs, dotRadius: 6, padding: 3,
     priorityFn: scatterLabelPriority,
   });
-  const labelsHtml = labelPlacements.map(lp => {
-    const label = launchChartModelLabel(lp.point.label);
-    return `<text x="${lp.x.toFixed(1)}" y="${lp.y.toFixed(1)}" text-anchor="${lp.anchor||'start'}" fill="${lp.point._pinnedLabel ? "#1c2b3b" : "#2b3b36"}" font-size="${lp.point._pinnedLabel ? "10.6" : "10"}" font-weight="${lp.point._pinnedLabel ? "700" : "580"}" opacity="0.95" stroke="#fffefb" stroke-width="${lp.point._pinnedLabel ? "2.1" : "1.7"}" paint-order="stroke">${esc(label)}</text>`;
-  }).join("");
+  const labelsHtml = labelPlacements.map(lp => renderScatterTextLabel(lp, "launchAllOrgs", {
+    fontSize: "10",
+    pinnedFontSize: "10.6",
+    fontWeight: "580",
+    pinnedFontWeight: "700",
+    strokeWidth: "1.7",
+    pinnedStrokeWidth: "2.1",
+    opacity: "0.95",
+  })).join("");
 
   svg.innerHTML = `${gridY}${gridX}${lines}${dots}${labelsHtml}${orgEndLabels}
     <text x="${ml+pw/2}" y="${H-10}" text-anchor="middle" fill="#425851" font-size="12">Release Date</text>
@@ -3767,13 +3839,16 @@ function renderReasoningScatter(filtered) {
     obstaclePoints: points, maxLabels: labelCandidates.length, dotRadius: 4, padding: 1.6,
     priorityFn: scatterLabelPriority,
   });
-  const labelHalo = labelPlacements.map(lp =>
-    `<circle cx="${lp.point._cx.toFixed(1)}" cy="${lp.point._cy.toFixed(1)}" r="${lp.point._pinnedLabel ? "6.4" : "5.6"}" fill="none" stroke="${orgColor(lp.point.org)}" stroke-opacity="${lp.point._pinnedLabel ? "0.7" : "0.45"}" stroke-width="${lp.point._pinnedLabel ? "1.4" : "1"}"/>`
-  ).join("");
-  const labelsHtml = labelPlacements.map(lp => {
-    const label = launchChartModelLabel(lp.point.label);
-    return `<text x="${lp.x.toFixed(1)}" y="${lp.y.toFixed(1)}" text-anchor="${lp.anchor||'start'}" fill="${lp.point._pinnedLabel ? "#1c2b3b" : "#2b3b36"}" font-size="${lp.point._pinnedLabel ? "9.2" : "8.6"}" font-weight="${lp.point._pinnedLabel ? "700" : "620"}" opacity="0.97" stroke="#fffefb" stroke-width="${lp.point._pinnedLabel ? "2.4" : "2.1"}" paint-order="stroke">${esc(label)}</text>`;
-  }).join("");
+  const labelHalo = labelPlacements.map(lp => renderScatterLabelHalo(lp, "reasoningScatter")).join("");
+  const labelsHtml = labelPlacements.map(lp => renderScatterTextLabel(lp, "reasoningScatter", {
+    fontSize: "8.6",
+    pinnedFontSize: "9.2",
+    fontWeight: "620",
+    pinnedFontWeight: "700",
+    strokeWidth: "2.1",
+    pinnedStrokeWidth: "2.4",
+    opacity: "0.97",
+  })).join("");
 
   svg.innerHTML = `${gridLines}${xGridLines}${trendHtml}${circles}${labelHalo}${labelsHtml}
     <text x="${ml+pw/2}" y="${H-8}" text-anchor="middle" fill="#425851" font-size="12">${esc(modeCfg.xAxisLabel)}</text>
@@ -3873,13 +3948,16 @@ function renderSizeScatterChart(filtered, options) {
     obstaclePoints: points, maxLabels: labelCandidates.length, dotRadius: 4, padding: 1.6,
     priorityFn: scatterLabelPriority,
   });
-  const labelHalo = labelPlacements.map(lp =>
-    `<circle cx="${lp.point._cx.toFixed(1)}" cy="${lp.point._cy.toFixed(1)}" r="${lp.point._pinnedLabel ? "6.4" : "5.6"}" fill="none" stroke="${orgColor(lp.point.org)}" stroke-opacity="${lp.point._pinnedLabel ? "0.7" : "0.45"}" stroke-width="${lp.point._pinnedLabel ? "1.4" : "1"}"/>`
-  ).join("");
-  const labelsHtml = labelPlacements.map(lp => {
-    const label = launchChartModelLabel(lp.point.label);
-    return `<text x="${lp.x.toFixed(1)}" y="${lp.y.toFixed(1)}" text-anchor="${lp.anchor||"start"}" fill="${lp.point._pinnedLabel ? "#1c2b3b" : "#2b3b36"}" font-size="${lp.point._pinnedLabel ? "9.2" : "8.6"}" font-weight="${lp.point._pinnedLabel ? "700" : "620"}" opacity="0.97" stroke="#fffefb" stroke-width="${lp.point._pinnedLabel ? "2.4" : "2.1"}" paint-order="stroke">${esc(label)}</text>`;
-  }).join("");
+  const labelHalo = labelPlacements.map(lp => renderScatterLabelHalo(lp, options.svgId)).join("");
+  const labelsHtml = labelPlacements.map(lp => renderScatterTextLabel(lp, options.svgId, {
+    fontSize: "8.6",
+    pinnedFontSize: "9.2",
+    fontWeight: "620",
+    pinnedFontWeight: "700",
+    strokeWidth: "2.1",
+    pinnedStrokeWidth: "2.4",
+    opacity: "0.97",
+  })).join("");
 
   svg.innerHTML = `${gridLines}${xGridLines}${trendHtml}${circles}${labelHalo}${labelsHtml}
     <text x="${ml+pw/2}" y="${H-8}" text-anchor="middle" fill="#425851" font-size="12">${esc(options.xAxisLabel)}</text>
@@ -4309,7 +4387,7 @@ function bindEvents() {
   // Scatter point labels
   const toggleScatterPointLabel = (target) => {
     if (!(target instanceof Element)) return false;
-    const point = target.closest(".scatter-point[data-scatter-chart][data-scatter-point-key]");
+    const point = target.closest("[data-scatter-chart][data-scatter-point-key]");
     if (!point) return false;
     const chartId = String(point.getAttribute("data-scatter-chart") || "");
     const pointKey = String(point.getAttribute("data-scatter-point-key") || "");
