@@ -1,12 +1,26 @@
-runs/
-runs_*/
+# Python
 __pycache__/
 *.pyc
+
+# Node / TypeScript
+node_modules/
+dist/
+*.tsbuildinfo
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Build / temp
+runs/
+runs_*/
 share/
 tmp_*.json
 *.zip
 *_report.html
+
+# Agent benchmark output
+agents/output/
 
 # Local experiment outputs / previews (not for GitHub)
 config.v1.gpt-5.2-chat.json
